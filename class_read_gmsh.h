@@ -36,8 +36,8 @@ public:
 
 protected:
     vector<point> coord_nodes;
-    node_ident id_nodes;
-    node_ident_msh id_nodes_msh;
+    vector<node_ident> id_nodes;
+    vector<node_ident_msh> id_nodes_msh;
 
 };
 
@@ -73,7 +73,7 @@ void GmshReader::read_mesh()
 	line = ReadLine(stream_msh);
 	stringstream(line) >> nbnode;
 
-	for (int i = 0; i < nbnode; i++)
+	for (unsigned i = 0; i < nbnode; i++)
 	{
 		line = ReadLine(stream_msh);
 		unsigned ident;
@@ -88,6 +88,38 @@ void GmshReader::read_mesh()
 
 	line = ReadLine(stream_msh);
 	stringstream(line) >> nbel_msh;
+
+	for (unsigned i = 0; i < nbel_msh; i++)
+	{
+		line = ReadLine(stream_msh);
+		node_ident_msh node_msh;
+		stringstream(line) >> node_msh.ident >> node_msh.elem_typ >> node_msh.nb_tags >> node_msh.tag1 >> node_msh.tag2;
+		id_nodes_msh.push_back(node_msh);
+		unsigned elem_typ = id_nodes_msh[i].elem_typ;
+		switch (elem_typ)
+		{
+		case 1:  // 2 - node line.
+			id_nodes_msh[i].id_node = new unsigned[7];
+			break;
+		case 3:  // 4-node quadrangle.
+			id_nodes_msh[i].id_node = new unsigned[9];
+			nbelm = nbelm + 1;
+			break;
+		case 15: // 1-node point.
+			id_nodes_msh[i].id_node = new unsigned[6];
+			break;
+		case 37: // 5-node edge quadrangle.
+			id_nodes_msh[i].id_node = new unsigned[30];
+			nbelm = nbelm + 1;
+			break;
+		case 27: // boundary 5-node edge.
+			id_nodes_msh[i].id_node = new unsigned[10];
+			break;
+		default:
+			throw runtime_error("Element type is not suppoted. Comming soon !");
+			break;
+		}
+	}
 
 }
 
