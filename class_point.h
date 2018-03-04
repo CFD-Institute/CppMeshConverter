@@ -1,5 +1,4 @@
-#ifndef CLASS_POINT_H_INCLUDED
-#define CLASS_POINT_H_INCLUDED
+#pragma once
 
 #include <iostream>
 #include <cmath>
@@ -43,4 +42,3 @@ void point::print()
     cout << this -> x << " " << this -> y << " " << this -> z << "\n" << endl;
 }
 
-#endif // CLASS_POINT_H_INCLUDED

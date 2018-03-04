@@ -1,5 +1,4 @@
-#ifndef CLASS_READ_GMSH_H_INCLUDED
-#define CLASS_READ_GMSH_H_INCLUDED
+#pragma once
 
 #include <vector>
 #include <iostream>
@@ -33,11 +32,16 @@ public:
 
     GmshReader();
     void read_mesh();
+	void construct_id_nodes();
 
 protected:
     vector<point> coord_nodes;
     vector<node_ident> id_nodes;
     vector<node_ident_msh> id_nodes_msh;
+
+private:
+	GmshReader(const GmshReader &gmshReader);             // override default copy constructor
+	GmshReader & operator = (const GmshReader &gmshReader); // and assignment operator
 
 };
 
@@ -132,4 +136,23 @@ void GmshReader::read_mesh()
 
 }
 
-#endif // CLASS_READ_GMSH_H_INCLUDED
+void GmshReader::construct_id_nodes()
+{
+	for (unsigned i = 0; i < nbel_msh; i++)
+	{
+		if (id_nodes_msh[i].elem_typ == 3)
+		{
+			node_ident node;
+			node.id_node = id_nodes_msh[i].id_node;
+			id_nodes.push_back(node);
+		}
+
+		if (id_nodes_msh[i].elem_typ == 37)
+		{
+			node_ident node;
+			node.id_node = id_nodes_msh[i].id_node;
+			id_nodes.push_back(node);
+		}
+	}
+}
+
