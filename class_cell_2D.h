@@ -34,5 +34,16 @@ public:
 
 void list_cell_2D::assign_vextex()
 {
+	for (unsigned i = 0; i < msh_reader.nbelm; i++) {
+		this->cells[i].ident = i + 1;
+		int idnode = msh_reader.coord_nodes[i].get_ident();
 
+		for (unsigned j = 0; j < msh_reader.nbnode; j++)
+		{
+			if (idnode == msh_reader.coord_nodes[j].get_ident())
+			{
+				//this->cells[i].vertex[0] = 
+			}
+		}
+	}
 }

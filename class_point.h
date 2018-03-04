@@ -8,10 +8,14 @@ using namespace std;
 class point{
 
 public:
-    void print();
     point(){};
     point(double, double, double, unsigned);
 	bool operator==(point);
+	void print();
+	int get_ident();
+	double get_x();
+	double get_y();
+	double get_z();
 
 private:
     double x;
@@ -35,6 +39,26 @@ inline bool point::operator==(point rhs)
 		return true;
 	}
 	return false;
+}
+
+inline int point::get_ident()
+{
+	return this->ident;
+}
+
+inline double point::get_x()
+{
+	return this->x;
+}
+
+inline double point::get_y()
+{
+	return this->y;
+}
+
+inline double point::get_z()
+{
+	return this->z;
 }
 
 void point::print()

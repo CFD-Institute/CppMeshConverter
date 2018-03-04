@@ -34,7 +34,6 @@ public:
     void read_mesh();
 	void construct_id_nodes();
 
-protected:
     vector<point> coord_nodes;
     vector<node_ident> id_nodes;
     vector<node_ident_msh> id_nodes_msh;
