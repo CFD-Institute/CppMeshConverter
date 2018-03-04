@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "class_point.h"
 
 
@@ -12,9 +13,7 @@ struct face {
 	point centroid;
 };
 
-class cell_2D : public point {
-
-public:
+struct cell_2D : public point {
 	unsigned ident = 0;
 	point vertex[4];
 	face faces[4];
@@ -23,12 +22,17 @@ public:
 	cell_2D *neighbor3 = nullptr;
 	cell_2D *neighbor4 = nullptr;
 	double vol = 0.0;
-
-	void assign_vertex(unsigned);
 };
 
-void cell_2D::assign_vertex(unsigned i)
+class list_cell_2D : public cell_2D {
+
+public:
+	GmshReader msh_reader;
+	vector<cell_2D> cells;
+	void assign_vextex();
+};
+
+void list_cell_2D::assign_vextex()
 {
-	this->ident = i;
 
 }
