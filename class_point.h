@@ -2,6 +2,7 @@
 #define CLASS_POINT_H_INCLUDED
 
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ public:
     void print();
     point(){};
     point(double, double, double, unsigned);
+	bool operator==(point);
 
 private:
     double x;
@@ -25,6 +27,15 @@ point::point(double x, double y, double z, unsigned ident)
     this -> y     = y;
     this -> z     = z;
     this -> ident = ident;
+}
+
+inline bool point::operator==(point rhs)
+{
+	if (abs(this->x - rhs.x) <= 1.0e-9 && abs(this->y - rhs.y) <= 1.0e-9 && abs(this->z - rhs.z) <= 1.0e-9)
+	{
+		return true;
+	}
+	return false;
 }
 
 void point::print()
