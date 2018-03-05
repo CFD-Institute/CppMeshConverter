@@ -30,20 +30,74 @@ public:
 	GmshReader msh_reader;
 	vector<cell_2D> cells;
 	void assign_vextex();
+	void assign_faces();
 };
 
 void list_cell_2D::assign_vextex()
 {
 	for (unsigned i = 0; i < msh_reader.nbelm; i++) {
-		this->cells[i].ident = i + 1;
-		int idnode = msh_reader.coord_nodes[i].get_ident();
+
+		cell_2D a_cell;
+
+		a_cell.ident = i;
+
+		int idnode = msh_reader.id_nodes[i].id_node[5];
 
 		for (unsigned j = 0; j < msh_reader.nbnode; j++)
 		{
 			if (idnode == msh_reader.coord_nodes[j].get_ident())
 			{
-				//this->cells[i].vertex[0] = 
+				double x = msh_reader.coord_nodes[j].get_x();
+				double y = msh_reader.coord_nodes[j].get_y();
+				double z = msh_reader.coord_nodes[j].get_z();
+				a_cell.vertex[0] = point(x, y, z, idnode);
 			}
 		}
+
+		idnode = msh_reader.id_nodes[i].id_node[6];
+
+		for (unsigned j = 0; j < msh_reader.nbnode; j++)
+		{
+			if (idnode == msh_reader.coord_nodes[j].get_ident())
+			{
+				double x = msh_reader.coord_nodes[j].get_x();
+				double y = msh_reader.coord_nodes[j].get_y();
+				double z = msh_reader.coord_nodes[j].get_z();
+				a_cell.vertex[1] = point(x, y, z, idnode);
+			}
+		}
+
+		idnode = msh_reader.id_nodes[i].id_node[7];
+
+		for (unsigned j = 0; j < msh_reader.nbnode; j++)
+		{
+			if (idnode == msh_reader.coord_nodes[j].get_ident())
+			{
+				double x = msh_reader.coord_nodes[j].get_x();
+				double y = msh_reader.coord_nodes[j].get_y();
+				double z = msh_reader.coord_nodes[j].get_z();
+				a_cell.vertex[2] = point(x, y, z, idnode);
+			}
+		}
+
+		idnode = msh_reader.id_nodes[i].id_node[8];
+
+		for (unsigned j = 0; j < msh_reader.nbnode; j++)
+		{
+			if (idnode == msh_reader.coord_nodes[j].get_ident())
+			{
+				double x = msh_reader.coord_nodes[j].get_x();
+				double y = msh_reader.coord_nodes[j].get_y();
+				double z = msh_reader.coord_nodes[j].get_z();
+				a_cell.vertex[3] = point(x, y, z, idnode);
+			}
+		}
+
+		this->cells.push_back(a_cell);
 	}
+}
+
+void list_cell_2D::assign_faces()
+{
+
 }
