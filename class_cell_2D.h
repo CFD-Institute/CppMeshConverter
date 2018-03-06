@@ -31,6 +31,7 @@ public:
 	vector<cell_2D> cells;
 	void assign_vextex();
 	void assign_faces();
+	void assign_boundary_condition();
 };
 
 void list_cell_2D::assign_vextex()
@@ -98,6 +99,24 @@ void list_cell_2D::assign_vextex()
 }
 
 void list_cell_2D::assign_faces()
+{
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		this->cells[i].faces[0].p1 = this->cells[i].vertex[0];
+		this->cells[i].faces[0].p2 = this->cells[i].vertex[1];
+
+		this->cells[i].faces[1].p1 = this->cells[i].vertex[1];
+		this->cells[i].faces[1].p2 = this->cells[i].vertex[2];
+
+		this->cells[i].faces[2].p1 = this->cells[i].vertex[2];
+		this->cells[i].faces[2].p2 = this->cells[i].vertex[3];
+
+		this->cells[i].faces[3].p1 = this->cells[i].vertex[3];
+		this->cells[i].faces[3].p2 = this->cells[i].vertex[0];
+	}
+}
+
+void list_cell_2D::assign_boundary_condition()
 {
 
 }

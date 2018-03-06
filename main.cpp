@@ -13,6 +13,7 @@ int main()
 	list_cell.msh_reader.construct_id_nodes();
 
 	list_cell.assign_vextex();
+	list_cell.assign_faces();
 
     return 0;
 }
