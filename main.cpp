@@ -14,6 +14,7 @@ int main()
 
 	list_cell.assign_vextex();
 	list_cell.assign_faces();
+	list_cell.assign_boundary_condition();
 
     return 0;
 }

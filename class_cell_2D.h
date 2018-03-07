@@ -118,5 +118,78 @@ void list_cell_2D::assign_faces()
 
 void list_cell_2D::assign_boundary_condition()
 {
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		unsigned idnode1 = this->cells[i].vertex[0].get_ident();
+		unsigned idnode2 = this->cells[i].vertex[1].get_ident();
 
+		for (auto it = msh_reader.id_nodes_msh.begin(); it != msh_reader.id_nodes_msh.end(); ++it)
+		{
+			if (it->elem_typ == 27)
+			{
+				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+				else if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+			}
+		}
+
+		idnode1 = this->cells[i].vertex[1].get_ident();
+		idnode2 = this->cells[i].vertex[2].get_ident();
+
+		for (auto it = msh_reader.id_nodes_msh.begin(); it != msh_reader.id_nodes_msh.end(); ++it)
+		{
+			if (it->elem_typ == 27)
+			{
+				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+				else if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+			}
+		}
+
+		idnode1 = this->cells[i].vertex[2].get_ident();
+		idnode2 = this->cells[i].vertex[3].get_ident();
+
+		for (auto it = msh_reader.id_nodes_msh.begin(); it != msh_reader.id_nodes_msh.end(); ++it)
+		{
+			if (it->elem_typ == 27)
+			{
+				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+				else if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+			}
+		}
+
+		idnode1 = this->cells[i].vertex[3].get_ident();
+		idnode2 = this->cells[i].vertex[0].get_ident();
+
+		for (auto it = msh_reader.id_nodes_msh.begin(); it != msh_reader.id_nodes_msh.end(); ++it)
+		{
+			if (it->elem_typ == 27)
+			{
+				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+				else if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
+				{
+					this->cells[i].faces[0].bc_typ = it->tag1;
+				}
+			}
+		}
+	}
 }
