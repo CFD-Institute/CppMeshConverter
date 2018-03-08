@@ -33,6 +33,7 @@ public:
 	void assign_vextex();
 	void assign_faces();
 	void assign_boundary_condition();
+	void detect_nearest_neighbor();
 	void calcul_vol_cells();
 };
 
@@ -222,5 +223,104 @@ void list_cell_2D::calcul_vol_cells()
 	{
 		this->cells[i].calcul_vol();
 		i = i + 1;
+	}
+}
+
+void list_cell_2D::detect_nearest_neighbor()
+{
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		unsigned idnode1 = this->cells[i].vertex[0].get_ident();
+		unsigned idnode2 = this->cells[i].vertex[1].get_ident();
+
+		cell_2D *curr_cell = &this->cells[i];
+
+		for (unsigned j = 0; j < msh_reader.nbelm; j++)
+		{
+			cell_2D *runn_cell = &this->cells[j];
+			unsigned cnt = 0;
+			for (unsigned t = 0; t < 4; t++)
+			{
+				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+			}
+			if (cnt == 2)
+			{
+				curr_cell->neighbor1 = runn_cell;
+			}
+		}
+
+	}
+
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		unsigned idnode1 = this->cells[i].vertex[1].get_ident();
+		unsigned idnode2 = this->cells[i].vertex[2].get_ident();
+
+		cell_2D *curr_cell = &this->cells[i];
+
+		for (unsigned j = 0; j < msh_reader.nbelm; j++)
+		{
+			cell_2D *runn_cell = &this->cells[j];
+			unsigned cnt = 0;
+			for (unsigned t = 0; t < 4; t++)
+			{
+				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+			}
+			if (cnt == 2)
+			{
+				curr_cell->neighbor2 = runn_cell;
+			}
+		}
+
+	}
+
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		unsigned idnode1 = this->cells[i].vertex[2].get_ident();
+		unsigned idnode2 = this->cells[i].vertex[3].get_ident();
+
+		cell_2D *curr_cell = &this->cells[i];
+
+		for (unsigned j = 0; j < msh_reader.nbelm; j++)
+		{
+			cell_2D *runn_cell = &this->cells[j];
+			unsigned cnt = 0;
+			for (unsigned t = 0; t < 4; t++)
+			{
+				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+			}
+			if (cnt == 2)
+			{
+				curr_cell->neighbor3 = runn_cell;
+			}
+		}
+
+	}
+
+	for (unsigned i = 0; i < msh_reader.nbelm; i++)
+	{
+		unsigned idnode1 = this->cells[i].vertex[3].get_ident();
+		unsigned idnode2 = this->cells[i].vertex[0].get_ident();
+
+		cell_2D *curr_cell = &this->cells[i];
+
+		for (unsigned j = 0; j < msh_reader.nbelm; j++)
+		{
+			cell_2D *runn_cell = &this->cells[j];
+			unsigned cnt = 0;
+			for (unsigned t = 0; t < 4; t++)
+			{
+				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+			}
+			if (cnt == 2)
+			{
+				curr_cell->neighbor4 = runn_cell;
+			}
+		}
+
 	}
 }
