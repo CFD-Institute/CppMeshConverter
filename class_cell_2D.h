@@ -147,11 +147,11 @@ void list_cell_2D::assign_boundary_condition()
 			{
 				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[1].bc_typ = it->tag1;
 				}
 				else if (it->id_node[5] == idnode2 && it->id_node[6] == idnode1)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[1].bc_typ = it->tag1;
 				}
 			}
 		}
@@ -165,11 +165,11 @@ void list_cell_2D::assign_boundary_condition()
 			{
 				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[2].bc_typ = it->tag1;
 				}
 				else if (it->id_node[5] == idnode2 && it->id_node[6] == idnode1)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[2].bc_typ = it->tag1;
 				}
 			}
 		}
@@ -183,13 +183,14 @@ void list_cell_2D::assign_boundary_condition()
 			{
 				if (it->id_node[5] == idnode1 && it->id_node[6] == idnode2)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[3].bc_typ = it->tag1;
 				}
 				else if (it->id_node[5] == idnode2 && it->id_node[6] == idnode1)
 				{
-					this->cells[i].faces[0].bc_typ = it->tag1;
+					this->cells[i].faces[3].bc_typ = it->tag1;
 				}
 			}
 		}
+
 	}
 }
