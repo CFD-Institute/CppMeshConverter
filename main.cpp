@@ -15,6 +15,7 @@ int main()
 	list_cell.assign_vextex();
 	list_cell.assign_faces();
 	list_cell.assign_boundary_condition();
+	list_cell.calcul_vol_cells();
 
     return 0;
 }

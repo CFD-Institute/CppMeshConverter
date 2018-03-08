@@ -22,6 +22,7 @@ struct cell_2D : public point {
 	cell_2D *neighbor3 = nullptr;
 	cell_2D *neighbor4 = nullptr;
 	double vol = 0.0;
+	void calcul_vol();
 };
 
 class list_cell_2D : public cell_2D {
@@ -32,6 +33,7 @@ public:
 	void assign_vextex();
 	void assign_faces();
 	void assign_boundary_condition();
+	void calcul_vol_cells();
 };
 
 void list_cell_2D::assign_vextex()
@@ -192,5 +194,33 @@ void list_cell_2D::assign_boundary_condition()
 			}
 		}
 
+	}
+}
+
+void cell_2D::calcul_vol()
+{
+	double x1 = this->vertex[0].get_x();
+	double x2 = this->vertex[1].get_x();
+	double x3 = this->vertex[2].get_x();
+	double x4 = this->vertex[3].get_x();
+
+	double y1 = this->vertex[0].get_y();
+	double y2 = this->vertex[1].get_y();
+	double y3 = this->vertex[2].get_y();
+	double y4 = this->vertex[3].get_y();
+
+	double vol = 0.5 * ((x1 - x3)*(y2 - y4) + (x4 - x2)*(y1 - y3));
+
+	this->vol = vol;
+}
+
+void list_cell_2D::calcul_vol_cells()
+{
+	unsigned i = 0;
+
+	for (auto it = this->cells.begin(); it != this->cells.end(); ++it)
+	{
+		this->cells[i].calcul_vol();
+		i = i + 1;
 	}
 }
