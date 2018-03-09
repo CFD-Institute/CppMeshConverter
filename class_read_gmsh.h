@@ -61,6 +61,7 @@ void GmshReader::read_mesh()
 
     string str;
     str = ReadLine( stream );
+	fname = str; 
 
 	// open mesh file .msh of GMSH
 	string str_msh = str + ".msh";

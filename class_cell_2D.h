@@ -1,5 +1,11 @@
 #pragma once
 #include <vector>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
+#include <sstream>
+#include <iomanip>
 #include "class_point.h"
 
 
@@ -35,6 +41,7 @@ public:
 	void assign_boundary_condition();
 	void detect_nearest_neighbor();
 	void calcul_vol_cells();
+	void write_vtk();
 };
 
 void list_cell_2D::assign_vextex()
@@ -238,18 +245,20 @@ void list_cell_2D::detect_nearest_neighbor()
 		for (unsigned j = 0; j < msh_reader.nbelm; j++)
 		{
 			cell_2D *runn_cell = &this->cells[j];
-			unsigned cnt = 0;
-			for (unsigned t = 0; t < 4; t++)
+			if (curr_cell != runn_cell) 
 			{
-				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-			}
-			if (cnt == 2)
-			{
-				curr_cell->neighbor1 = runn_cell;
+				unsigned cnt = 0;
+				for (unsigned t = 0; t < 4; t++)
+				{
+					if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+					if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				}
+				if (cnt == 2)
+				{
+					this->cells[i].neighbor1 = runn_cell;
+				}
 			}
 		}
-
 	}
 
 	for (unsigned i = 0; i < msh_reader.nbelm; i++)
@@ -262,18 +271,19 @@ void list_cell_2D::detect_nearest_neighbor()
 		for (unsigned j = 0; j < msh_reader.nbelm; j++)
 		{
 			cell_2D *runn_cell = &this->cells[j];
-			unsigned cnt = 0;
-			for (unsigned t = 0; t < 4; t++)
-			{
-				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-			}
-			if (cnt == 2)
-			{
-				curr_cell->neighbor2 = runn_cell;
+			if (curr_cell != runn_cell) {
+				unsigned cnt = 0;
+				for (unsigned t = 0; t < 4; t++)
+				{
+					if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+					if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				}
+				if (cnt == 2)
+				{
+					this->cells[i].neighbor2 = runn_cell;
+				}
 			}
 		}
-
 	}
 
 	for (unsigned i = 0; i < msh_reader.nbelm; i++)
@@ -286,15 +296,17 @@ void list_cell_2D::detect_nearest_neighbor()
 		for (unsigned j = 0; j < msh_reader.nbelm; j++)
 		{
 			cell_2D *runn_cell = &this->cells[j];
-			unsigned cnt = 0;
-			for (unsigned t = 0; t < 4; t++)
-			{
-				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-			}
-			if (cnt == 2)
-			{
-				curr_cell->neighbor3 = runn_cell;
+			if (curr_cell != runn_cell) {
+				unsigned cnt = 0;
+				for (unsigned t = 0; t < 4; t++)
+				{
+					if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+					if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				}
+				if (cnt == 2)
+				{
+					this->cells[i].neighbor3 = runn_cell;
+				}
 			}
 		}
 
@@ -310,17 +322,117 @@ void list_cell_2D::detect_nearest_neighbor()
 		for (unsigned j = 0; j < msh_reader.nbelm; j++)
 		{
 			cell_2D *runn_cell = &this->cells[j];
-			unsigned cnt = 0;
-			for (unsigned t = 0; t < 4; t++)
-			{
-				if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-				if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
-			}
-			if (cnt == 2)
-			{
-				curr_cell->neighbor4 = runn_cell;
+			if (curr_cell != runn_cell) {
+				unsigned cnt = 0;
+				for (unsigned t = 0; t < 4; t++)
+				{
+					if (idnode1 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+					if (idnode2 == runn_cell->vertex[t].get_ident()) cnt = cnt + 1;
+				}
+				if (cnt == 2)
+				{
+					this->cells[i].neighbor4 = runn_cell;
+				}
 			}
 		}
 
 	}
+}
+
+void list_cell_2D::write_vtk()
+{
+	string str;
+	str = msh_reader.fname;
+	str = msh_reader.fname + ".vtk";
+	ofstream outfile(str);
+	outfile.setf(ios::fixed, ios::floatfield);
+	outfile.precision(10);
+	outfile << "# vtk DataFile Version 2.0" << endl;
+	outfile << "VTK Format for unstructured grid" << endl;
+	outfile << "ASCII" << endl;
+	outfile << "DATASET POLYDATA" << endl;
+	outfile << "POINTS " << msh_reader.nbnode << " float" << endl;
+
+	for (int i = 0; i < msh_reader.nbnode; i++)
+	{
+		outfile << setw(15) << msh_reader.coord_nodes[i].get_x() << " " << setw(15) << msh_reader.coord_nodes[i].get_y() << " " << setw(15) << 0.0f << " " << endl;
+	}
+
+	outfile << "POLYGONS " << msh_reader.nbelm << " " << 5 * msh_reader.nbelm << endl;
+
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		outfile << 4 << " " << msh_reader.id_nodes[i].id_node[5] - 1 << " " << msh_reader.id_nodes[i].id_node[6] - 1 << " " << msh_reader.id_nodes[i].id_node[7] - 1 << " " << msh_reader.id_nodes[i].id_node[8] - 1 << endl;
+	}
+
+	outfile << "CELL_DATA " << msh_reader.nbelm << endl;
+	outfile << "SCALARS CELL_IDENT integer 1" << endl;
+	outfile << "LOOKUP_TABLE default " << endl;
+
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		outfile << this->cells[i].ident << endl;
+	}
+
+	outfile << "SCALARS NEIGHBOR1 integer 1" << endl;
+	outfile << "LOOKUP_TABLE default " << endl;
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		cell_2D *curr_cell = this->cells[i].neighbor1;
+		if (curr_cell != nullptr)
+		{
+			outfile << curr_cell->ident << endl;
+		}
+		else
+		{
+			outfile << -1 << endl;
+		}
+	}
+
+	outfile << "SCALARS NEIGHBOR2 integer 1" << endl;
+	outfile << "LOOKUP_TABLE default " << endl;
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		cell_2D *curr_cell = this->cells[i].neighbor2;
+		if (curr_cell != nullptr)
+		{
+			outfile << curr_cell->ident << endl;
+		}
+		else
+		{
+			outfile << -1 << endl;
+		}
+	}
+
+	outfile << "SCALARS NEIGHBOR3 integer 1" << endl;
+	outfile << "LOOKUP_TABLE default " << endl;
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		cell_2D *curr_cell = this->cells[i].neighbor3;
+		if (curr_cell != nullptr)
+		{
+			outfile << curr_cell->ident << endl;
+		}
+		else
+		{
+			outfile << -1 << endl;
+		}
+	}
+
+	outfile << "SCALARS NEIGHBOR4 integer 1" << endl;
+	outfile << "LOOKUP_TABLE default " << endl;
+	for (int i = 0; i < msh_reader.nbelm; i++)
+	{
+		cell_2D *curr_cell = this->cells[i].neighbor4;
+		if (curr_cell != nullptr)
+		{
+			outfile << curr_cell->ident << endl;
+		}
+		else
+		{
+			outfile << -1 << endl;
+		}
+	}
+
+	outfile.close();
 }

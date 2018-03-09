@@ -16,6 +16,7 @@ int main()
 	list_cell.assign_faces();
 	list_cell.assign_boundary_condition();
 	list_cell.detect_nearest_neighbor();
+	list_cell.write_vtk();
 
 	list_cell.calcul_vol_cells();
 
