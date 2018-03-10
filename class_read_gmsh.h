@@ -61,7 +61,7 @@ void GmshReader::read_mesh()
 
     string str;
     str = ReadLine( stream );
-	fname = str; 
+	fname = str;
 
 	// open mesh file .msh of GMSH
 	string str_msh = str + ".msh";
@@ -97,7 +97,7 @@ void GmshReader::read_mesh()
 	{
 		line = ReadLine(stream_msh);
 		node_ident_msh node_msh;
-		stringstream ss = stringstream(line);
+		stringstream ss = stringstream(line);  // no error with Visual C++ 2015, error with g++
 		vector <unsigned> line_number;
 		while (!ss.eof()) {
 			unsigned number;
@@ -123,7 +123,7 @@ void GmshReader::read_mesh()
 			break;
 		case 15: // 1-node point.
 			break;
-		case 37: // 5-node edge quadrangle.	
+		case 37: // 5-node edge quadrangle.
 			nbelm = nbelm + 1;
 			break;
 		case 27: // boundary 5-node edge.
