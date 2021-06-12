@@ -12,8 +12,14 @@ class Cell2D {
 public:
     Cell2D() {};
     unsigned getIdent();
-    Point* getVertex();
-    Face* getFace();
+    Point getVertex1();
+    Point getVertex2();
+    Point getVertex3();
+    Point getVertex4();
+    Face getFace1();
+    Face getFace2();
+    Face getFace3();
+    Face getFace4();
     Cell2D* getNeighbor1();
     Cell2D* getNeighbor2();
     Cell2D* getNeighbor3();

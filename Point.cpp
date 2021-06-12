@@ -19,11 +19,11 @@ bool Point::operator==(Point rhs) {
     return false;
 }
 
-int Point::getId() {
+unsigned Point::getId() {
     return this->ident;
 }
 
-Point* Point::setId(int id) {
+Point* Point::setId(unsigned id) {
     this->ident = id;
     return this;
 }

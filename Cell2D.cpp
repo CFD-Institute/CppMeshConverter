@@ -5,12 +5,36 @@ unsigned Cell2D::getIdent() {
     return this->ident;
 }
 
-Point* Cell2D::getVertex() {
-    return this->vertex;
+Point Cell2D::getVertex1() {
+    return this->vertex[0];
 }
 
-Face* Cell2D::getFace() {
-    return this->faces;
+Point Cell2D::getVertex2() {
+    return this->vertex[1];
+}
+
+Point Cell2D::getVertex3() {
+    return this->vertex[2];
+}
+
+Point Cell2D::getVertex4() {
+    return this->vertex[3];
+}
+
+Face Cell2D::getFace1() {
+    return this->faces[0];
+}
+
+Face Cell2D::getFace2() {
+    return this->faces[1];
+}
+
+Face Cell2D::getFace3() {
+    return this->faces[2];
+}
+
+Face Cell2D::getFace4() {
+    return this->faces[3];
 }
 
 Cell2D* Cell2D::getNeighbor1() {

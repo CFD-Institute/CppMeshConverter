@@ -7,11 +7,11 @@ public:
     Point(double, double, double, unsigned);
 	bool operator==(Point);
 	void print();
-	int getId();
+	unsigned getId();
 	double getX();
 	double getY();
 	double getZ();
-        Point* setId(int);
+        Point* setId(unsigned);
         Point* setX(double);
         Point* setY(double);
         Point* setZ(double);
