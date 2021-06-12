@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include "GmshReader.h"
-#include "class_cell_2D.h"
+#include "Cell2D.h"
 
 using namespace std;
 using namespace std::chrono;

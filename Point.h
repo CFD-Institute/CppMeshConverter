@@ -1,3 +1,5 @@
+#ifndef POINT_H
+#define POINT_H
 class Point {
 
 public:
@@ -21,3 +23,4 @@ private:
     unsigned ident;
 };
 
+#endif /* POINT_H */
