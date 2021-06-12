@@ -44,3 +44,19 @@ double Cell2D::getVol() {
     return vol;
 }
 
+void Cell2D::setVertex1(Point p) {
+    this->vertex[0] = p;
+}
+
+void Cell2D::setVertex2(Point p) {
+    this->vertex[1] = p;
+}
+
+void Cell2D::setVertex3(Point p) {
+    this->vertex[2] = p;
+}
+
+void Cell2D::setVertex4(Point p) {
+    this->vertex[3] = p;
+}
+

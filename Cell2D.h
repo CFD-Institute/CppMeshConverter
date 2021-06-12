@@ -22,6 +22,10 @@ public:
     
     void setIdent(unsigned);
     void setVertex(Point*);
+    void setVertex1(Point);
+    void setVertex2(Point);
+    void setVertex3(Point);
+    void setVertex4(Point);
     void setFace(Face*);
     void setNeighbor1(Cell2D*);
     void setNeighbor2(Cell2D*);
