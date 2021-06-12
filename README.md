@@ -7,9 +7,16 @@ Some features:
 
 - Intensive use of the C++ standard template library. 
 
-Remarks:
+**Remarks:**
 
-- You will need a mature C++11 compiler to compile and run my code.
+- You will need a mature C++11 compiler to compile and run my code, as described in **History**
+
+**History:**
+06/2021
+
+- After a major refactoring, the code has been tested with MinGW g++ 9.20 (under NetBeans 8.2 IDE) and MinGW g++ 8.1 (under Code::Blocks 20.3 IDE).
+
+2018
 
 - I have compiled and run my code successfully with g++ 5.1.0, Visual Studio 2015 Community Edition, Intel C++ 2018 for Linux.
 
