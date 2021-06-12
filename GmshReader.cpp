@@ -53,6 +53,18 @@ string GmshReader::getFname() {
     return this->fName;
 }
 
+vector<NodeIdent> GmshReader::getIdNodes() {
+    return this->idNodes;
+}
+
+vector<NodeIdentMsh> GmshReader::getIdNodesMsh() {
+    return this->idNodesMsh;
+}
+
+vector<Point> GmshReader::getCoordNodes() {
+    return this->coordNodes;
+}
+
 void GmshReader::readMesh() {
     // open input file
     setFname("input.dat");

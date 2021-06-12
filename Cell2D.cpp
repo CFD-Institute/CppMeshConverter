@@ -44,6 +44,10 @@ double Cell2D::getVol() {
     return vol;
 }
 
+void Cell2D::setIdent(unsigned ident) {
+    this->ident = ident;
+}
+
 void Cell2D::setVertex1(Point p) {
     this->vertex[0] = p;
 }
@@ -60,3 +64,22 @@ void Cell2D::setVertex4(Point p) {
     this->vertex[3] = p;
 }
 
+void Cell2D::setNeighbor1(Cell2D* currentCell) {
+    this->neighbor1 = currentCell;
+}
+
+void Cell2D::setNeighbor2(Cell2D* currentCell) {
+    this->neighbor2 = currentCell;
+}
+
+void Cell2D::setNeighbor3(Cell2D* currentCell) {
+    this->neighbor3 = currentCell;
+}
+
+void Cell2D::setNeighbor4(Cell2D* currentCell) {
+    this->neighbor4 = currentCell;
+}
+
+void Cell2D::setVol(double vol) {
+    this->vol = vol;
+}
