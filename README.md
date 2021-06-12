@@ -3,9 +3,8 @@ C++ 11 version of my Fortran code gmsh-to-vtk-and-tecplot
 
 Some features:
 
-- Object-oriented programming with modern C++ standard (C++11).
-
-- Intensive use of the C++ standard template library. 
+- Convert .msh mesh file (Quadrilateral) of gmsh to .vtk file.
+- Written in modern C++ (C++11 standard, intensive use of C++ STL).
 
 **Remarks:**
 
