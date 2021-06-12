@@ -17,14 +17,18 @@ using namespace std;
 class FvmMesh2D {
 
 public:
-    GmshReader msh_reader;
+    FvmMesh2D();
+    vector<Cell2D> getCells();
+    void assignVertex();
+    void assignFaces();
+    void assignBoundaryCondition();
+    void detectNearestNeighbor();
+    void calculVol();
+    void writeVtk();
+    
+private:
+    GmshReader mshReader;
     vector<Cell2D> cells;
-    void assign_vextex();
-    void assign_faces();
-    void assign_boundary_condition();
-    void detect_nearest_neighbor();
-    void calcul_vol_cells();
-    void write_vtk();
 };
 
 #endif /* FVMMESH2D_H */

@@ -10,19 +10,28 @@
 
 using namespace std;
 
-void FvmMesh2D::assign_vextex() {
-    vector<Point> coordNodes = msh_reader.getCoordNodes();
+FvmMesh2D::FvmMesh2D() {
+    mshReader.readMesh();
+    mshReader.constructIdNodes();
+}
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+vector<Cell2D> FvmMesh2D::getCells() {
+    return this->cells;
+}
+
+void FvmMesh2D::assignVertex() {
+    vector<Point> coordNodes = mshReader.getCoordNodes();
+
+    for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 
     Cell2D a_cell;
 
     a_cell.setIdent(i);
 
-    NodeIdent nodeIdent = msh_reader.getIdNodes()[i];
+    NodeIdent nodeIdent = mshReader.getIdNodes()[i];
     unsigned idnode = nodeIdent.getIdNode()[5];
 
-    for (unsigned j = 0; j < msh_reader.getNbNode(); j++) {
+    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
 	if (idnode == coordNodes[j].getId()) {
             double x = coordNodes[j].getX();
             double y = coordNodes[j].getY();
@@ -33,7 +42,7 @@ void FvmMesh2D::assign_vextex() {
 
     idnode = nodeIdent.getIdNode()[6];
 
-    for (unsigned j = 0; j < msh_reader.getNbNode(); j++) {
+    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
 	if (idnode == coordNodes[j].getId()) {
             double x = coordNodes[j].getX();
             double y = coordNodes[j].getY();
@@ -44,7 +53,7 @@ void FvmMesh2D::assign_vextex() {
 
     idnode = nodeIdent.getIdNode()[7];
 
-    for (unsigned j = 0; j < msh_reader.getNbNode(); j++) {
+    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
 	if (idnode == coordNodes[j].getId()) {
             double x = coordNodes[j].getX();
             double y = coordNodes[j].getY();
@@ -55,7 +64,7 @@ void FvmMesh2D::assign_vextex() {
 
     idnode = nodeIdent.getIdNode()[8];
 
-    for (unsigned j = 0; j < msh_reader.getNbNode(); j++) {
+    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
         if (idnode == coordNodes[j].getId()) {
             double x = coordNodes[j].getX();
             double y = coordNodes[j].getY();
@@ -68,8 +77,8 @@ void FvmMesh2D::assign_vextex() {
     }
 }
 
-void FvmMesh2D::assign_faces() {
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+void FvmMesh2D::assignFaces() {
+    for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 	this->cells[i].getFace1().setP1(this->cells[i].getVertex1());
 	this->cells[i].getFace1().setP2(this->cells[i].getVertex2());
 
@@ -84,10 +93,10 @@ void FvmMesh2D::assign_faces() {
     }
 }
 
-void FvmMesh2D::assign_boundary_condition() {
-    vector<NodeIdentMsh> idNodeMsh = msh_reader.getIdNodesMsh();
+void FvmMesh2D::assignBoundaryCondition() {
+    vector<NodeIdentMsh> idNodeMsh = mshReader.getIdNodesMsh();
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 	unsigned idnode1 = this->cells[i].getVertex1().getId();
 	unsigned idnode2 = this->cells[i].getVertex2().getId();
 
@@ -143,7 +152,7 @@ void FvmMesh2D::assign_boundary_condition() {
     }
 }
 
-void FvmMesh2D::calcul_vol_cells() {
+void FvmMesh2D::calculVol() {
     unsigned i = 0;
 
     for (auto it = this->cells.begin(); it != this->cells.end(); ++it) {
@@ -152,8 +161,8 @@ void FvmMesh2D::calcul_vol_cells() {
     }
 }
 
-void FvmMesh2D::detect_nearest_neighbor() {
-    unsigned nbelm = msh_reader.getNbElm();
+void FvmMesh2D::detectNearestNeighbor() {
+    unsigned nbelm = mshReader.getNbElm();
 
     for (unsigned i = 0; i < nbelm; i++) {
 	unsigned idnode1 = this->cells[i].getVertex1().getId();
@@ -282,10 +291,12 @@ void FvmMesh2D::detect_nearest_neighbor() {
     }
 }
 
-void FvmMesh2D::write_vtk() {
-    string str = msh_reader.getFname() + ".vtk";
-    vector<Point> coordNodes  = msh_reader.getCoordNodes();
-    vector<NodeIdent> idNodes = msh_reader.getIdNodes();
+void FvmMesh2D::writeVtk() {
+    string str = mshReader.getFname() + ".vtk";
+    vector<Point> coordNodes  = mshReader.getCoordNodes();
+    vector<NodeIdent> idNodes = mshReader.getIdNodes();
+    unsigned nbNodes = mshReader.getNbNode();
+    unsigned nbElm = mshReader.getNbElm();
     ofstream outfile(str);
 
     outfile.setf(ios::fixed, ios::floatfield);
@@ -294,30 +305,30 @@ void FvmMesh2D::write_vtk() {
     outfile << "VTK Format for unstructured grid" << endl;
     outfile << "ASCII" << endl;
     outfile << "DATASET POLYDATA" << endl;
-    outfile << "POINTS " << msh_reader.getNbNode() << " float" << endl;
+    outfile << "POINTS " << nbNodes << " float" << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbNode(); i++) {
+    for (unsigned i = 0; i < nbNodes; i++) {
 	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " " << endl;
     }
 
-    outfile << "POLYGONS " << msh_reader.getNbElm() << " " << 5 * msh_reader.getNbElm() << endl;
+    outfile << "POLYGONS " << nbElm << " " << 5 * nbElm << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
         outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << endl;
     }
 
-    outfile << "CELL_DATA " << msh_reader.getNbElm() << endl;
+    outfile << "CELL_DATA " << nbElm << endl;
     outfile << "SCALARS CELL_IDENT integer 1" << endl;
     outfile << "LOOKUP_TABLE default " << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
         outfile << this->cells[i].getIdent() << endl;
     }
 
     outfile << "SCALARS NEIGHBOR1 integer 1" << endl;
     outfile << "LOOKUP_TABLE default " << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor1();
 
         if (curr_cell != nullptr) {
@@ -330,7 +341,7 @@ void FvmMesh2D::write_vtk() {
     outfile << "SCALARS NEIGHBOR2 integer 1" << endl;
     outfile << "LOOKUP_TABLE default " << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor2();
 
         if (curr_cell != nullptr) {
@@ -343,7 +354,7 @@ void FvmMesh2D::write_vtk() {
     outfile << "SCALARS NEIGHBOR3 integer 1" << endl;
     outfile << "LOOKUP_TABLE default " << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor3();
 
         if (curr_cell != nullptr) {
@@ -356,7 +367,7 @@ void FvmMesh2D::write_vtk() {
     outfile << "SCALARS NEIGHBOR4 integer 1" << endl;
     outfile << "LOOKUP_TABLE default " << endl;
 
-    for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
+    for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor4();
 
         if (curr_cell != nullptr) {
