@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <iomanip>
-#include "class_point.h"
+#include "Point.h"
 
 
 unsigned nbfaces;

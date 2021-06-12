@@ -1,6 +1,6 @@
 #include <iostream>
 #include <chrono>
-#include "class_read_gmsh.h"
+#include "GmshReader.h"
 #include "class_cell_2D.h"
 
 using namespace std;
