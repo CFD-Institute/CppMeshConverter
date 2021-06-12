@@ -25,6 +25,7 @@ public:
     void detectNearestNeighbor();
     void calculVol();
     void writeVtk();
+    void writeTecplot();
     
 private:
     GmshReader mshReader;

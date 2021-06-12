@@ -380,3 +380,55 @@ void FvmMesh2D::writeVtk() {
     outfile.close();
 }
 
+void FvmMesh2D::writeTecplot() {
+    /* 
+     * Write converted mesh file in Tecplot 2009 compatible format
+     */
+    string str = mshReader.getFname() + ".dat";
+    vector<Point> coordNodes  = mshReader.getCoordNodes();
+    vector<NodeIdent> idNodes = mshReader.getIdNodes();
+    unsigned nbNodes = mshReader.getNbNode();
+    unsigned nbElm = mshReader.getNbElm();
+    ofstream outfile(str);
+
+    outfile.setf(ios::fixed, ios::floatfield);
+    outfile.precision(10);
+    outfile << "VARIABLES=X,Y,CELL_IDENT,NEIGHBOR1,NEIGHBOR2,NEIGHBOR3,NEIGHBOR4" << endl;
+    outfile << "VARIABLES=X,Y" << endl;
+    outfile << "ZONE T=\"UNSTRUCTURED-COUNTOUR\"" << endl;
+    outfile << "ZONETYPE=FEPOLYGON" << endl;
+    outfile << "NODES=" << nbNodes << endl;
+    outfile << "ELEMENTS=" << nbElm << endl;
+    outfile << "FACES=" << nbElm * 4 << endl;
+    outfile << "NumConnectedBoundaryFaces=0" << endl;
+    outfile << "TotalNumBoundaryConnections=0" << endl;
+
+    for (unsigned i = 0; i < nbNodes; i++) {
+	outfile << setw(15) << coordNodes[i].getX() << endl;
+    }
+    
+    for (unsigned i = 0; i < nbNodes; i++) {
+	outfile << setw(15) << coordNodes[i].getY() << endl;
+    }
+
+    /*
+     * Node indexes
+     */
+    for (unsigned i = 0; i < nbElm; i++) {
+        outfile << idNodes[i].getIdNode()[5] << " " << idNodes[i].getIdNode()[6] << endl;
+        outfile << idNodes[i].getIdNode()[6] << " " << idNodes[i].getIdNode()[7] << endl;
+        outfile << idNodes[i].getIdNode()[7] << " " << idNodes[i].getIdNode()[8] << endl;
+        outfile << idNodes[i].getIdNode()[8] << " " << idNodes[i].getIdNode()[5] << endl;
+    }
+
+    for (unsigned i = 0; i < nbElm; i++) {
+        outfile << i + 1 << " " << i + 1 << " " << i + 1 << " " << i + 1 << " " << endl;
+    }
+
+    for (unsigned i = 0; i < nbElm; i++) {
+        outfile << 0 << " " << 0 << " " << 0 << " " << 0 << " " << endl;
+    }
+
+    outfile.close();
+}
+

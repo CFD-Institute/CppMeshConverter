@@ -15,7 +15,7 @@ int main()
 	finiteVolumeMesh.assignFaces();
 	finiteVolumeMesh.assignBoundaryCondition();
 	finiteVolumeMesh.detectNearestNeighbor();
-	finiteVolumeMesh.writeVtk();
+	finiteVolumeMesh.writeTecplot();
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(t2 - t1).count();
