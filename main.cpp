@@ -16,11 +16,7 @@ int main()
 
 	finiteVolumeMesh.assign_vextex();
 	finiteVolumeMesh.assign_faces();
-        
-        cout << "passed 1" << endl;
 	finiteVolumeMesh.assign_boundary_condition();
-        
-        cout << "passed 2" << endl;
 	finiteVolumeMesh.detect_nearest_neighbor();
 	finiteVolumeMesh.write_vtk();
 

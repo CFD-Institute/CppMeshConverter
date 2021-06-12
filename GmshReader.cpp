@@ -73,6 +73,7 @@ void GmshReader::readMesh() {
 
     string str;
     str = ReadLine( stream );
+    setFname(str);
 
     // open mesh file .msh of GMSH
     string str_msh = str + ".msh";
@@ -121,11 +122,11 @@ void GmshReader::readMesh() {
 	node_msh.setNbTags(line_number[2]);
 	node_msh.setTag1(line_number[3]);
 	node_msh.setTag2(line_number[4]);
-        
+
 	idNodesMsh.push_back(node_msh);
-        
+
 	unsigned elem_typ = idNodesMsh[i].getElemTyp();
-        
+
 	switch (elem_typ) {
             case 1:  // 2 - node line.
 		break;
@@ -150,7 +151,7 @@ void GmshReader::readMesh() {
 void GmshReader::constructIdNodes() {
     for (unsigned i = 0; i < nbElMsh; i++) {
         unsigned elmTyp = idNodesMsh[i].getElemTyp();
-        
+
         switch (elmTyp) {
             case 3:
             case 37:

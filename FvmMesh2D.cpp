@@ -12,7 +12,7 @@ using namespace std;
 
 void FvmMesh2D::assign_vextex() {
     vector<Point> coordNodes = msh_reader.getCoordNodes();
-    
+
     for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
 
     Cell2D a_cell;
@@ -85,11 +85,13 @@ void FvmMesh2D::assign_faces() {
 }
 
 void FvmMesh2D::assign_boundary_condition() {
+    vector<NodeIdentMsh> idNodeMsh = msh_reader.getIdNodesMsh();
+
     for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
 	unsigned idnode1 = this->cells[i].getVertex1().getId();
 	unsigned idnode2 = this->cells[i].getVertex2().getId();
 
-	for (auto it = msh_reader.getIdNodesMsh().begin(); it != msh_reader.getIdNodesMsh().end(); ++it) {
+	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
                     this->cells[i].getFace1().setBcTyp(it->getTag1()) ;
@@ -102,7 +104,7 @@ void FvmMesh2D::assign_boundary_condition() {
 	idnode1 = this->cells[i].getVertex2().getId();
 	idnode2 = this->cells[i].getVertex3().getId();
 
-	for (auto it = msh_reader.getIdNodesMsh().begin(); it != msh_reader.getIdNodesMsh().end(); ++it) {
+	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
                     this->cells[i].getFace2().setBcTyp(it->getTag1()) ;
@@ -115,7 +117,7 @@ void FvmMesh2D::assign_boundary_condition() {
 	idnode1 = this->cells[i].getVertex3().getId();
 	idnode2 = this->cells[i].getVertex4().getId();
 
-	for (auto it = msh_reader.getIdNodesMsh().begin(); it != msh_reader.getIdNodesMsh().end(); ++it) {
+	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
                     this->cells[i].getFace3().setBcTyp(it->getTag1()) ;
@@ -128,7 +130,7 @@ void FvmMesh2D::assign_boundary_condition() {
 	idnode1 = this->cells[i].getVertex4().getId();
 	idnode2 = this->cells[i].getVertex1().getId();
 
-	for (auto it = msh_reader.getIdNodesMsh().begin(); it != msh_reader.getIdNodesMsh().end(); ++it) {
+	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
                     this->cells[i].getFace4().setBcTyp(it->getTag1()) ;
@@ -164,16 +166,16 @@ void FvmMesh2D::detect_nearest_neighbor() {
 
             if (curr_cell != runn_cell) {
 		unsigned cnt = 0;
-		
+
                 if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-		
+
                 if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
 
@@ -198,13 +200,13 @@ void FvmMesh2D::detect_nearest_neighbor() {
 
                 if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-		
+
                 if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
 
@@ -229,13 +231,13 @@ void FvmMesh2D::detect_nearest_neighbor() {
 
                 if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-		
+
                 if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
 
@@ -261,13 +263,13 @@ void FvmMesh2D::detect_nearest_neighbor() {
 
                 if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-		
+
                 if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                
+
                 if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
                 if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
 
@@ -282,7 +284,10 @@ void FvmMesh2D::detect_nearest_neighbor() {
 
 void FvmMesh2D::write_vtk() {
     string str = msh_reader.getFname() + ".vtk";
+    vector<Point> coordNodes  = msh_reader.getCoordNodes();
+    vector<NodeIdent> idNodes = msh_reader.getIdNodes();
     ofstream outfile(str);
+
     outfile.setf(ios::fixed, ios::floatfield);
     outfile.precision(10);
     outfile << "# vtk DataFile Version 2.0" << endl;
@@ -292,13 +297,13 @@ void FvmMesh2D::write_vtk() {
     outfile << "POINTS " << msh_reader.getNbNode() << " float" << endl;
 
     for (unsigned i = 0; i < msh_reader.getNbNode(); i++) {
-	outfile << setw(15) << msh_reader.getCoordNodes()[i].getX() << " " << setw(15) << msh_reader.getCoordNodes()[i].getY() << " " << setw(15) << 0.0f << " " << endl;
+	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " " << endl;
     }
 
     outfile << "POLYGONS " << msh_reader.getNbElm() << " " << 5 * msh_reader.getNbElm() << endl;
 
     for (unsigned i = 0; i < msh_reader.getNbElm(); i++) {
-        outfile << 4 << " " << msh_reader.getIdNodes()[i].getIdNode()[5] - 1 << " " << msh_reader.getIdNodes()[i].getIdNode()[6] - 1 << " " << msh_reader.getIdNodes()[i].getIdNode()[7] - 1 << " " << msh_reader.getIdNodes()[i].getIdNode()[8] - 1 << endl;
+        outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << endl;
     }
 
     outfile << "CELL_DATA " << msh_reader.getNbElm() << endl;
