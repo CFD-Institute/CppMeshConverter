@@ -9,10 +9,10 @@ public:
 	double getX();
 	double getY();
 	double getZ();
-        Point setId(int);
-        Point setX(double);
-        Point setY(double);
-        Point setZ(double);
+        Point* setId(int);
+        Point* setX(double);
+        Point* setY(double);
+        Point* setZ(double);
 
 private:
     double x;

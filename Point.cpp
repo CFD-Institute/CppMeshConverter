@@ -1,10 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-#pragma once
-
 #include <iostream>
 #include <cmath>
 
@@ -30,7 +23,7 @@ int Point::getId() {
     return this->ident;
 }
 
-Point Point::setId(int id) {
+Point* Point::setId(int id) {
     this->ident = id;
     return this;
 }
@@ -39,7 +32,7 @@ double Point::getX() {
     return this->x;
 }
 
-Point Point::setX(double x) {
+Point* Point::setX(double x) {
     this->x = x;
     return this;
 }
@@ -48,7 +41,7 @@ double Point::getY() {
     return this->y;
 }
 
-Point Point::setY(double y) {
+Point* Point::setY(double y) {
     this->y = y;
     return this;
 }
@@ -57,7 +50,7 @@ double Point::getZ() {
     return this->z;
 }
 
-Point Point::setZ(double z) {
+Point* Point::setZ(double z) {
     this->z = z;
     return this;
 }

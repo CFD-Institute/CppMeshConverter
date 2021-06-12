@@ -10,6 +10,8 @@
  *
  * Created on June 12, 2021, 1:02 PM
  */
+#include "NodeIdent.h"
+
 class NodeIdentMsh : public NodeIdent {
 
     public:
@@ -20,11 +22,11 @@ class NodeIdentMsh : public NodeIdent {
         unsigned getNbTags();
         unsigned getTag1();
         unsigned getTag2();
-        NodeIdentMsh setIdent(unsigned);
-        NodeIdentMsh setElemTyp(unsigned);
-        NodeIdentMsh setNbTags(unsigned);
-        NodeIdentMsh setTag1(unsigned);
-        NodeIdentMsh setTag2(unsigned);
+        NodeIdentMsh* setIdent(unsigned);
+        NodeIdentMsh* setElemTyp(unsigned);
+        NodeIdentMsh* setNbTags(unsigned);
+        NodeIdentMsh* setTag1(unsigned);
+        NodeIdentMsh* setTag2(unsigned);
         
     private:
         unsigned ident;
