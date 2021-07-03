@@ -37,6 +37,7 @@ void FvmMesh2D::assignVertex() {
             double y = coordNodes[j].getY();
             double z = coordNodes[j].getZ();
             a_cell.setVertex1(Point(x, y, z, idnode));
+            break;
 	}
     }
 
@@ -48,6 +49,7 @@ void FvmMesh2D::assignVertex() {
             double y = coordNodes[j].getY();
             double z = coordNodes[j].getZ();
             a_cell.setVertex2(Point(x, y, z, idnode));
+            break;
 	}
     }
 
@@ -59,6 +61,7 @@ void FvmMesh2D::assignVertex() {
             double y = coordNodes[j].getY();
             double z = coordNodes[j].getZ();
             a_cell.setVertex3(Point(x, y, z, idnode));
+            break;
         }
     }
 
@@ -70,6 +73,7 @@ void FvmMesh2D::assignVertex() {
             double y = coordNodes[j].getY();
             double z = coordNodes[j].getZ();
             a_cell.setVertex4(Point(x, y, z, idnode));
+            break;
 	}
     }
 
