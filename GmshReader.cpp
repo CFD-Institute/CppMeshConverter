@@ -141,7 +141,7 @@ void GmshReader::readMesh() {
             case 27: // boundary 5-node edge.
 		break;
             default:
-		throw runtime_error("Element type is not suppoted. Comming soon !");
+		throw runtime_error("Element type is not supported. Coming soon !");
 		break;
 	}
     }
