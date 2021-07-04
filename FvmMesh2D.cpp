@@ -20,135 +20,123 @@ vector<Cell2D> & FvmMesh2D::getCells() {
 }
 
 void FvmMesh2D::assignVertex() {
-    vector<Point> & coordNodes = mshReader.getCoordNodes();
+    vector<Point> coordNodes = mshReader.getCoordNodes();
 
     for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 
-    Cell2D a_cell;
+    Cell2D aCell;
 
-    a_cell.setIdent(i);
+    aCell.setIdent(i);
 
     NodeIdent nodeIdent = mshReader.getIdNodes()[i];
     unsigned idnode = nodeIdent.getIdNode()[5];
 
-    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
-	if (idnode == coordNodes[j].getId()) {
-            double x = coordNodes[j].getX();
-            double y = coordNodes[j].getY();
-            double z = coordNodes[j].getZ();
-            a_cell.setVertex1(Point(x, y, z, idnode));
+    for (Point node : coordNodes) {
+	if (idnode == node.getId()) {
+            aCell.setVertex1(node);
             break;
 	}
     }
 
     idnode = nodeIdent.getIdNode()[6];
 
-    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
-	if (idnode == coordNodes[j].getId()) {
-            double x = coordNodes[j].getX();
-            double y = coordNodes[j].getY();
-            double z = coordNodes[j].getZ();
-            a_cell.setVertex2(Point(x, y, z, idnode));
+    for (Point node : coordNodes) {
+	if (idnode == node.getId()) {
+            aCell.setVertex2(node);
             break;
 	}
     }
 
     idnode = nodeIdent.getIdNode()[7];
 
-    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
-	if (idnode == coordNodes[j].getId()) {
-            double x = coordNodes[j].getX();
-            double y = coordNodes[j].getY();
-            double z = coordNodes[j].getZ();
-            a_cell.setVertex3(Point(x, y, z, idnode));
-            break;
-        }
-    }
-
-    idnode = nodeIdent.getIdNode()[8];
-
-    for (unsigned j = 0; j < mshReader.getNbNode(); j++) {
-        if (idnode == coordNodes[j].getId()) {
-            double x = coordNodes[j].getX();
-            double y = coordNodes[j].getY();
-            double z = coordNodes[j].getZ();
-            a_cell.setVertex4(Point(x, y, z, idnode));
+    for (Point node : coordNodes) {
+	if (idnode == node.getId()) {
+            aCell.setVertex3(node);
             break;
 	}
     }
 
-    this->cells.push_back(a_cell);
+    idnode = nodeIdent.getIdNode()[8];
+
+    for (Point node : coordNodes) {
+	if (idnode == node.getId()) {
+            aCell.setVertex4(node);
+            break;
+	}
+    }
+
+    this->cells.push_back(aCell);
     }
 }
 
 void FvmMesh2D::assignFaces() {
-    for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
-	this->cells[i].getFace1().setP1(this->cells[i].getVertex1());
-	this->cells[i].getFace1().setP2(this->cells[i].getVertex2());
+    for (Cell2D & cell : cells) {
+	cell.getFace1().setP1(cell.getVertex1());
+	cell.getFace1().setP2(cell.getVertex2());
 
-	this->cells[i].getFace2().setP1(this->cells[i].getVertex2());
-	this->cells[i].getFace2().setP2(this->cells[i].getVertex3());
+	cell.getFace2().setP1(cell.getVertex2());
+	cell.getFace2().setP2(cell.getVertex3());
 
-	this->cells[i].getFace3().setP1(this->cells[i].getVertex3());
-	this->cells[i].getFace3().setP2(this->cells[i].getVertex4());
+	cell.getFace3().setP1(cell.getVertex3());
+	cell.getFace3().setP2(cell.getVertex4());
 
-	this->cells[i].getFace4().setP1(this->cells[i].getVertex4());
-	this->cells[i].getFace4().setP2(this->cells[i].getVertex1());
+	cell.getFace4().setP1(cell.getVertex4());
+	cell.getFace4().setP2(cell.getVertex1());
     }
 }
 
 void FvmMesh2D::assignBoundaryCondition() {
     vector<NodeIdentMsh> idNodeMsh = mshReader.getIdNodesMsh();
 
-    for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
-	unsigned idnode1 = this->cells[i].getVertex1().getId();
-	unsigned idnode2 = this->cells[i].getVertex2().getId();
+    for (Cell2D & cell : cells) {
+	unsigned idnode1 = cell.getVertex1().getId();
+	unsigned idnode2 = cell.getVertex2().getId();
 
 	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
-                    this->cells[i].getFace1().setBcTyp(it->getTag1()) ;
+                    cell.getFace1().setBcTyp(it->getTag1()) ;
 		} else if (it->getIdNode()[5] == idnode2 && it->getIdNode()[6] == idnode1) {
-                    this->cells[i].getFace1().setBcTyp(it->getTag1()) ;
+                    cell.getFace1().setBcTyp(it->getTag1()) ;
 		}
             }
 	}
 
-	idnode1 = this->cells[i].getVertex2().getId();
-	idnode2 = this->cells[i].getVertex3().getId();
+	idnode1 = cell.getVertex2().getId();
+	idnode2 = cell.getVertex3().getId();
 
 	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
-                    this->cells[i].getFace2().setBcTyp(it->getTag1()) ;
+                    cell.getFace2().setBcTyp(it->getTag1()) ;
 		} else if (it->getIdNode()[5] == idnode2 && it->getIdNode()[6] == idnode1) {
-                    this->cells[i].getFace2().setBcTyp(it->getTag1()) ;
+                    cell.getFace2().setBcTyp(it->getTag1()) ;
 		}
             }
 	}
 
-	idnode1 = this->cells[i].getVertex3().getId();
-	idnode2 = this->cells[i].getVertex4().getId();
+	idnode1 = cell.getVertex3().getId();
+	idnode2 = cell.getVertex4().getId();
 
 	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
-                    this->cells[i].getFace3().setBcTyp(it->getTag1()) ;
+                    cell.getFace3().setBcTyp(it->getTag1()) ;
 		} else if (it->getIdNode()[5] == idnode2 && it->getIdNode()[6] == idnode1) {
-                    this->cells[i].getFace3().setBcTyp(it->getTag1()) ;
+                    cell.getFace3().setBcTyp(it->getTag1()) ;
 		}
             }
 	}
 
-	idnode1 = this->cells[i].getVertex4().getId();
-	idnode2 = this->cells[i].getVertex1().getId();
+	idnode1 = cell.getVertex4().getId();
+	idnode2 = cell.getVertex1().getId();
 
 	for (auto it = idNodeMsh.begin(); it != idNodeMsh.end(); ++it) {
             if (it->getElemTyp() == 27) {
 		if (it->getIdNode()[5] == idnode1 && it->getIdNode()[6] == idnode2) {
-                    this->cells[i].getFace4().setBcTyp(it->getTag1()) ;
+                    cell.getFace4().setBcTyp(it->getTag1()) ;
 		} else if (it->getIdNode()[5] == idnode2 && it->getIdNode()[6] == idnode1) {
-                    this->cells[i].getFace4().setBcTyp(it->getTag1()) ;
+                    cell.getFace4().setBcTyp(it->getTag1()) ;
 		}
             }
 	}
