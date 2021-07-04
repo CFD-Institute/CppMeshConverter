@@ -53,15 +53,15 @@ string GmshReader::getFname() {
     return this->fName;
 }
 
-vector<NodeIdent> GmshReader::getIdNodes() {
+vector<NodeIdent> & GmshReader::getIdNodes() {
     return this->idNodes;
 }
 
-vector<NodeIdentMsh> GmshReader::getIdNodesMsh() {
+vector<NodeIdentMsh> & GmshReader::getIdNodesMsh() {
     return this->idNodesMsh;
 }
 
-vector<Point> GmshReader::getCoordNodes() {
+vector<Point> & GmshReader::getCoordNodes() {
     return this->coordNodes;
 }
 

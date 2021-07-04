@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-std::vector<unsigned> NodeIdent::getIdNode() {
+std::vector<unsigned> & NodeIdent::getIdNode() {
     return this->idNode;
 }
 

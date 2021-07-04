@@ -19,7 +19,7 @@ class NodeIdent {
     
 public:
     NodeIdent() {};
-    std::vector<unsigned> getIdNode();
+    std::vector<unsigned> & getIdNode();
     NodeIdent* setIdNode(std::vector<unsigned>);
     
 private:

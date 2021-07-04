@@ -18,7 +18,7 @@ class FvmMesh2D {
 
 public:
     FvmMesh2D();
-    vector<Cell2D> getCells();
+    vector<Cell2D> & getCells();
     void assignVertex();
     void assignFaces();
     void assignBoundaryCondition();

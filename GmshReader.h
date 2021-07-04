@@ -18,9 +18,9 @@ public:
     unsigned getNbElMsh();
     unsigned getNbElm();
     string getFname();
-    vector<Point> getCoordNodes();
-    vector<NodeIdent> getIdNodes();
-    vector<NodeIdentMsh> getIdNodesMsh();
+    vector<Point> & getCoordNodes();
+    vector<NodeIdent> & getIdNodes();
+    vector<NodeIdentMsh> & getIdNodesMsh();
     GmshReader* setNbNode(unsigned);
     GmshReader* setNbElMsh(unsigned);
     GmshReader* setNbElm(unsigned);

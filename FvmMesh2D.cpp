@@ -15,12 +15,12 @@ FvmMesh2D::FvmMesh2D() {
     mshReader.constructIdNodes();
 }
 
-vector<Cell2D> FvmMesh2D::getCells() {
+vector<Cell2D> & FvmMesh2D::getCells() {
     return this->cells;
 }
 
 void FvmMesh2D::assignVertex() {
-    vector<Point> coordNodes = mshReader.getCoordNodes();
+    vector<Point> & coordNodes = mshReader.getCoordNodes();
 
     for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 
