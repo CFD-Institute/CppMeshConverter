@@ -293,81 +293,84 @@ void FvmMesh2D::writeVtk() {
 
     outfile.setf(ios::fixed, ios::floatfield);
     outfile.precision(10);
-    outfile << "# vtk DataFile Version 2.0" << endl;
-    outfile << "VTK Format for unstructured grid" << endl;
-    outfile << "ASCII" << endl;
-    outfile << "DATASET POLYDATA" << endl;
-    outfile << "POINTS " << nbNodes << " float" << endl;
+    outfile << "# vtk DataFile Version 2.0\n";
+    outfile << "VTK Format for unstructured grid\n";
+    outfile << "ASCII\n";
+    outfile << "DATASET POLYDATA\n";
+    outfile << "POINTS " << nbNodes << " float\n";
 
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " " << endl;
+	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " \n";
     }
 
-    outfile << "POLYGONS " << nbElm << " " << 5 * nbElm << endl;
+    outfile << "POLYGONS " << nbElm << " " << 5 * nbElm << '\n';
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << endl;
+        outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << "\n";
     }
 
-    outfile << "CELL_DATA " << nbElm << endl;
-    outfile << "SCALARS CELL_IDENT integer 1" << endl;
+    outfile << "CELL_DATA " << nbElm << '\n';
+    outfile << "SCALARS CELL_IDENT integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << this->cells[i].getIdent() << endl;
+        outfile << this->cells[i].getIdent() << '\n';
     }
 
-    outfile << "SCALARS NEIGHBOR1 integer 1" << endl;
-    outfile << "LOOKUP_TABLE default " << endl;
+    outfile << "SCALARS NEIGHBOR1 integer 1" << '\n';
+    outfile << "LOOKUP_TABLE default " << '\n';
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor1();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR2 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR2 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor2();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR3 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR3 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor3();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR4 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR4 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor4();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
+
+    outfile << flush;
 
     outfile.close();
 }
