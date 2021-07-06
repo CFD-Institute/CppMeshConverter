@@ -168,134 +168,147 @@ void FvmMesh2D::calculVol() {
 //    }
 }
 
-void FvmMesh2D::detectNearestNeighbor() {
-    unsigned nbelm = mshReader.getNbElm();
+void FvmMesh2D::detectNearestNeighbor()
+{
+//  unsigned nbelm = mshReader.getNbElm();
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex1().getId();
-	unsigned idnode2 = this->cells[i].getVertex2().getId();
+  auto begin = cells.begin();
+  auto end   = cells.end();
 
-	Cell2D *curr_cell = &this->cells[i];
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex1().getId();
+    const unsigned idnode2 = curr_cell.getVertex2().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor1(runn_cell);
-		}
-            }
-	}
-    }
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex2().getId();
-	unsigned idnode2 = this->cells[i].getVertex3().getId();
+        if (cnt == 2) {
+          curr_cell.setNeighbor1(&runn_cell);
+        }
 
-	Cell2D *curr_cell = &this->cells[i];
+      }
+    });
+  });
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex2().getId();
+    const unsigned idnode2 = curr_cell.getVertex3().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor2(runn_cell);
-                }
-            }
-	}
-    }
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex3().getId();
-	unsigned idnode2 = this->cells[i].getVertex4().getId();
+        if (cnt == 2) {
+          curr_cell.setNeighbor2(&runn_cell);
+        }
 
-	Cell2D *curr_cell = &this->cells[i];
+      }
+    });
+  });
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex3().getId();
+    const unsigned idnode2 = curr_cell.getVertex4().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor3(runn_cell);
-		}
-            }
-	}
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    }
+        if (cnt == 2) {
+          curr_cell.setNeighbor3(&runn_cell);
+        }
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex4().getId();
-	unsigned idnode2 = this->cells[i].getVertex1().getId();
+      }
+    });
+  });
 
-	Cell2D *curr_cell = &this->cells[i];
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex4().getId();
+    const unsigned idnode2 = curr_cell.getVertex1().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor4(runn_cell);
-		}
-            }
-	}
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    }
+        if (cnt == 2) {
+          curr_cell.setNeighbor4(&runn_cell);
+        }
+
+      }
+    });
+  });
+
 }
 
 void FvmMesh2D::writeVtk() {
