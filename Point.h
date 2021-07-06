@@ -5,12 +5,12 @@ class Point {
 public:
     Point(){};
     Point(double, double, double, unsigned);
-    bool operator==(Point);
-    void print();
-    unsigned getId();
-    double getX();
-    double getY();
-    double getZ();
+    bool operator==(Point&) const;
+    void print() const;
+    unsigned getId() const;
+    double getX() const;
+    double getY() const;
+    double getZ() const;
     Point* setId(unsigned);
     Point* setX(double);
     Point* setY(double);

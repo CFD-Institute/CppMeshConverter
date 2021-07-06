@@ -8,6 +8,8 @@
 #include "FvmMesh2D.h"
 #include "GmshReader.h"
 
+#include <algorithm>
+
 using namespace std;
 
 FvmMesh2D::FvmMesh2D() {
@@ -22,47 +24,55 @@ vector<Cell2D> & FvmMesh2D::getCells() {
 void FvmMesh2D::assignVertex() {
     vector<Point> coordNodes = mshReader.getCoordNodes();
 
+    auto nodeIdents = mshReader.getIdNodes();
     for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 
     Cell2D aCell;
 
     aCell.setIdent(i);
 
-    NodeIdent nodeIdent = mshReader.getIdNodes()[i];
-    unsigned idnode = nodeIdent.getIdNode()[5];
+    NodeIdent nodeIdent = nodeIdents[i];
+    unsigned idnode     = nodeIdent.getIdNode()[5];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex1(node);
-            break;
-	}
+    auto begin = coordNodes.begin();
+    auto end   = coordNodes.end();
+
+    auto target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex1(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[6];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex2(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex2(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[7];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex3(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex3(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[8];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex4(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex4(*target_node);
     }
 
     this->cells.push_back(aCell);
@@ -70,19 +80,21 @@ void FvmMesh2D::assignVertex() {
 }
 
 void FvmMesh2D::assignFaces() {
-    for (Cell2D & cell : cells) {
-	cell.getFace1().setP1(cell.getVertex1());
-	cell.getFace1().setP2(cell.getVertex2());
 
-	cell.getFace2().setP1(cell.getVertex2());
-	cell.getFace2().setP2(cell.getVertex3());
+  std::for_each(cells.begin(), cells.end(), [](Cell2D& cell) {
 
-	cell.getFace3().setP1(cell.getVertex3());
-	cell.getFace3().setP2(cell.getVertex4());
 
-	cell.getFace4().setP1(cell.getVertex4());
-	cell.getFace4().setP2(cell.getVertex1());
-    }
+    cell.getFace1().setP1(cell.getVertex1());
+    cell.getFace1().setP2(cell.getVertex2());
+
+    cell.getFace2().setP1(cell.getVertex2());
+    cell.getFace2().setP2(cell.getVertex3());
+
+    cell.getFace3().setP1(cell.getVertex3());
+    cell.getFace3().setP2(cell.getVertex4());
+
+    cell.getFace4().setP1(cell.getVertex4());
+    cell.getFace4().setP2(cell.getVertex1());});
 }
 
 void FvmMesh2D::assignBoundaryCondition() {
@@ -145,142 +157,158 @@ void FvmMesh2D::assignBoundaryCondition() {
 }
 
 void FvmMesh2D::calculVol() {
-    unsigned i = 0;
+//  unsigned i = 0;
 
-    for (auto it = this->cells.begin(); it != this->cells.end(); ++it) {
-	this->cells[i].setVol(this->cells[i].getVol());
-	i = i + 1;
-    }
+  std::for_each(cells.begin(), cells.end(), [](Cell2D cell) {
+    cell.setVol(cell.getVol());
+    });
+//    for (auto it = this->cells.begin(); it != this->cells.end(); ++it) {
+//	this->cells[i].setVol(this->cells[i].getVol());
+//	i = i + 1;
+//    }
 }
 
-void FvmMesh2D::detectNearestNeighbor() {
-    unsigned nbelm = mshReader.getNbElm();
+void FvmMesh2D::detectNearestNeighbor()
+{
+//  unsigned nbelm = mshReader.getNbElm();
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex1().getId();
-	unsigned idnode2 = this->cells[i].getVertex2().getId();
+  auto begin = cells.begin();
+  auto end   = cells.end();
 
-	Cell2D *curr_cell = &this->cells[i];
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex1().getId();
+    const unsigned idnode2 = curr_cell.getVertex2().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor1(runn_cell);
-		}
-            }
-	}
-    }
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex2().getId();
-	unsigned idnode2 = this->cells[i].getVertex3().getId();
+        if (cnt == 2) {
+          curr_cell.setNeighbor1(&runn_cell);
+        }
 
-	Cell2D *curr_cell = &this->cells[i];
+      }
+    });
+  });
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex2().getId();
+    const unsigned idnode2 = curr_cell.getVertex3().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor2(runn_cell);
-                }
-            }
-	}
-    }
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex3().getId();
-	unsigned idnode2 = this->cells[i].getVertex4().getId();
+        if (cnt == 2) {
+          curr_cell.setNeighbor2(&runn_cell);
+        }
 
-	Cell2D *curr_cell = &this->cells[i];
+      }
+    });
+  });
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex3().getId();
+    const unsigned idnode2 = curr_cell.getVertex4().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor3(runn_cell);
-		}
-            }
-	}
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    }
+        if (cnt == 2) {
+          curr_cell.setNeighbor3(&runn_cell);
+        }
 
-    for (unsigned i = 0; i < nbelm; i++) {
-	unsigned idnode1 = this->cells[i].getVertex4().getId();
-	unsigned idnode2 = this->cells[i].getVertex1().getId();
+      }
+    });
+  });
 
-	Cell2D *curr_cell = &this->cells[i];
 
-	for (unsigned j = 0; j < nbelm; j++) {
-            Cell2D *runn_cell = &this->cells[j];
+  std::for_each(begin, end, [&](Cell2D& curr_cell) {
+    const unsigned idnode1 = curr_cell.getVertex4().getId();
+    const unsigned idnode2 = curr_cell.getVertex1().getId();
 
-            if (curr_cell != runn_cell) {
-		unsigned cnt = 0;
+    std::for_each(begin, end, [&](Cell2D& runn_cell) {
+      auto vertices = runn_cell.getVertices();
+      std::array<unsigned, 4> ids{
+          vertices[0].getId(), vertices[1].getId(), vertices[2].getId(),
+          vertices[3].getId()};
 
-                if (idnode1 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex1().getId()) cnt = cnt + 1;
+      if (&curr_cell != &runn_cell) {
+        unsigned cnt = 0;
 
-                if (idnode1 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex2().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[0]) cnt++;
+        if (idnode2 == ids[0]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex3().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[1]) cnt++;
+        if (idnode2 == ids[1]) cnt++;
 
-                if (idnode1 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
-                if (idnode2 == runn_cell->getVertex4().getId()) cnt = cnt + 1;
+        if (idnode1 == ids[2]) cnt++;
+        if (idnode2 == ids[2]) cnt++;
 
-                if (cnt == 2) {
-                    this->cells[i].setNeighbor4(runn_cell);
-		}
-            }
-	}
+        if (idnode1 == ids[3]) cnt++;
+        if (idnode2 == ids[3]) cnt++;
 
-    }
+        if (cnt == 2) {
+          curr_cell.setNeighbor4(&runn_cell);
+        }
+
+      }
+    });
+  });
+
 }
 
 void FvmMesh2D::writeVtk() {
@@ -293,81 +321,84 @@ void FvmMesh2D::writeVtk() {
 
     outfile.setf(ios::fixed, ios::floatfield);
     outfile.precision(10);
-    outfile << "# vtk DataFile Version 2.0" << endl;
-    outfile << "VTK Format for unstructured grid" << endl;
-    outfile << "ASCII" << endl;
-    outfile << "DATASET POLYDATA" << endl;
-    outfile << "POINTS " << nbNodes << " float" << endl;
+    outfile << "# vtk DataFile Version 2.0\n";
+    outfile << "VTK Format for unstructured grid\n";
+    outfile << "ASCII\n";
+    outfile << "DATASET POLYDATA\n";
+    outfile << "POINTS " << nbNodes << " float\n";
 
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " " << endl;
+	outfile << setw(15) << coordNodes[i].getX() << " " << setw(15) << coordNodes[i].getY() << " " << setw(15) << 0.0f << " \n";
     }
 
-    outfile << "POLYGONS " << nbElm << " " << 5 * nbElm << endl;
+    outfile << "POLYGONS " << nbElm << " " << 5 * nbElm << '\n';
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << endl;
+        outfile << 4 << " " << idNodes[i].getIdNode()[5] - 1 << " " << idNodes[i].getIdNode()[6] - 1 << " " << idNodes[i].getIdNode()[7] - 1 << " " << idNodes[i].getIdNode()[8] - 1 << "\n";
     }
 
-    outfile << "CELL_DATA " << nbElm << endl;
-    outfile << "SCALARS CELL_IDENT integer 1" << endl;
+    outfile << "CELL_DATA " << nbElm << '\n';
+    outfile << "SCALARS CELL_IDENT integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << this->cells[i].getIdent() << endl;
+        outfile << this->cells[i].getIdent() << '\n';
     }
 
-    outfile << "SCALARS NEIGHBOR1 integer 1" << endl;
-    outfile << "LOOKUP_TABLE default " << endl;
+    outfile << "SCALARS NEIGHBOR1 integer 1" << '\n';
+    outfile << "LOOKUP_TABLE default " << '\n';
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor1();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR2 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR2 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor2();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR3 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR3 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor3();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
 
-    outfile << "SCALARS NEIGHBOR4 integer 1" << endl;
+    outfile << "SCALARS NEIGHBOR4 integer 1" << '\n';
     outfile << "LOOKUP_TABLE default " << endl;
 
     for (unsigned i = 0; i < nbElm; i++) {
 	Cell2D *curr_cell = this->cells[i].getNeighbor4();
 
         if (curr_cell != nullptr) {
-            outfile << curr_cell->getIdent() << endl;
+            outfile << curr_cell->getIdent() << '\n';
 	} else {
-            outfile << -1 << endl;
+            outfile << -1 << '\n';
 	}
     }
+
+    outfile << flush;
 
     outfile.close();
 }
@@ -385,41 +416,46 @@ void FvmMesh2D::writeTecplot() {
 
     outfile.setf(ios::fixed, ios::floatfield);
     outfile.precision(10);
-    outfile << "VARIABLES=X,Y,CELL_IDENT,NEIGHBOR1,NEIGHBOR2,NEIGHBOR3,NEIGHBOR4" << endl;
-    outfile << "VARIABLES=X,Y" << endl;
-    outfile << "ZONE T=\"UNSTRUCTURED-COUNTOUR\"" << endl;
-    outfile << "ZONETYPE=FEPOLYGON" << endl;
-    outfile << "NODES=" << nbNodes << endl;
-    outfile << "ELEMENTS=" << nbElm << endl;
-    outfile << "FACES=" << nbElm * 4 << endl;
-    outfile << "NumConnectedBoundaryFaces=0" << endl;
-    outfile << "TotalNumBoundaryConnections=0" << endl;
+    outfile << "VARIABLES=X,Y,CELL_IDENT,NEIGHBOR1,NEIGHBOR2,NEIGHBOR3,NEIGHBOR4" << '\n';
+    outfile << "VARIABLES=X,Y" << '\n';
+    outfile << "ZONE T=\"UNSTRUCTURED-COUNTOUR\"" << '\n';
+    outfile << "ZONETYPE=FEPOLYGON" << '\n';
+    outfile << "NODES=" << nbNodes << '\n';
+    outfile << "ELEMENTS=" << nbElm << '\n';
+    outfile << "FACES=" << nbElm * 4 << '\n';
+    outfile << "NumConnectedBoundaryFaces=0" << '\n';
+    outfile << "TotalNumBoundaryConnections=0" << '\n';
 
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getX() << endl;
+      outfile << setw(15) << coordNodes[i].getX() << '\n';
     }
+    outfile << flush;
     
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getY() << endl;
+        outfile << setw(15) << coordNodes[i].getY() << '\n';
     }
+    outfile << flush;
 
     /*
      * Node indexes
      */
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << idNodes[i].getIdNode()[5] << " " << idNodes[i].getIdNode()[6] << endl;
-        outfile << idNodes[i].getIdNode()[6] << " " << idNodes[i].getIdNode()[7] << endl;
-        outfile << idNodes[i].getIdNode()[7] << " " << idNodes[i].getIdNode()[8] << endl;
-        outfile << idNodes[i].getIdNode()[8] << " " << idNodes[i].getIdNode()[5] << endl;
+        outfile << idNodes[i].getIdNode()[5] << " " << idNodes[i].getIdNode()[6] << '\n';
+        outfile << idNodes[i].getIdNode()[6] << " " << idNodes[i].getIdNode()[7] << '\n';
+        outfile << idNodes[i].getIdNode()[7] << " " << idNodes[i].getIdNode()[8] << '\n';
+        outfile << idNodes[i].getIdNode()[8] << " " << idNodes[i].getIdNode()[5] << '\n';
     }
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << i + 1 << " " << i + 1 << " " << i + 1 << " " << i + 1 << " " << endl;
+        outfile << i + 1 << " " << i + 1 << " " << i + 1 << " " << i + 1 << " " << '\n';
     }
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << 0 << " " << 0 << " " << 0 << " " << 0 << " " << endl;
+        outfile << 0 << " " << 0 << " " << 0 << " " << 0 << " " << '\n';
     }
+    outfile << flush;
 
     outfile.close();
 }

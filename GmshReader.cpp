@@ -89,6 +89,8 @@ void GmshReader::readMesh() {
     line = ReadLine(stream_msh);
     stringstream(line) >> nbNode;
 
+
+    coordNodes.reserve(nbNode);
     for (unsigned i = 0; i < nbNode; i++) {
         line = ReadLine(stream_msh);
         unsigned ident;
@@ -104,6 +106,7 @@ void GmshReader::readMesh() {
     line = ReadLine(stream_msh);
     stringstream(line) >> nbElMsh;
 
+    idNodesMsh.reserve(nbElMsh);
     for (unsigned i = 0; i < nbElMsh; i++) {
 	line = ReadLine(stream_msh);
 	NodeIdentMsh node_msh;
@@ -149,6 +152,7 @@ void GmshReader::readMesh() {
 }
 
 void GmshReader::constructIdNodes() {
+    idNodes.reserve(nbElMsh);
     for (unsigned i = 0; i < nbElMsh; i++) {
         unsigned elmTyp = idNodesMsh[i].getElemTyp();
 
