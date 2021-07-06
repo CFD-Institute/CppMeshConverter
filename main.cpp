@@ -19,9 +19,9 @@ int main()
         finiteVolumeMesh.writeVtk();
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	auto duration = duration_cast<seconds>(t2 - t1).count();
+	auto duration = duration_cast<milliseconds>(t2 - t1).count();
 
-	cout << duration << " seconds." << endl;
+	cout << duration << " milliseconds." << endl;
 
     return 0;
 }
