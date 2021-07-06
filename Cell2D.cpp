@@ -6,19 +6,19 @@ unsigned Cell2D::getIdent() const {
 }
 
 Point& Cell2D::getVertex1()  {
-    return vertex[0];
+    return vertices[0];
 }
 
 Point& Cell2D::getVertex2()  {
-    return vertex[1];
+    return vertices[1];
 }
 
 Point& Cell2D::getVertex3()  {
-    return vertex[2];
+    return vertices[2];
 }
 
 Point& Cell2D::getVertex4()  {
-    return vertex[3];
+    return vertices[3];
 }
 
 Face& Cell2D::getFace1()  {
@@ -54,15 +54,15 @@ Cell2D* Cell2D::getNeighbor4() {
 }
 
 double Cell2D::getVol() const {
-    double x1 = this->vertex[0].getX();
-    double x2 = this->vertex[1].getX();
-    double x3 = this->vertex[2].getX();
-    double x4 = this->vertex[3].getX();
+    double x1 = vertices[0].getX();
+    double x2 = vertices[1].getX();
+    double x3 = vertices[2].getX();
+    double x4 = vertices[3].getX();
 
-    double y1 = this->vertex[0].getY();
-    double y2 = this->vertex[1].getY();
-    double y3 = this->vertex[2].getY();
-    double y4 = this->vertex[3].getY();
+    double y1 = vertices[0].getY();
+    double y2 = vertices[1].getY();
+    double y3 = vertices[2].getY();
+    double y4 = vertices[3].getY();
 
     double vol = 0.5 * ((x1 - x3)*(y2 - y4) + (x4 - x2)*(y1 - y3));
     return vol;
@@ -73,19 +73,19 @@ void Cell2D::setIdent(unsigned ident) {
 }
 
 void Cell2D::setVertex1(Point p) {
-    this->vertex[0] = p;
+    vertices[0] = p;
 }
 
 void Cell2D::setVertex2(Point p) {
-    this->vertex[1] = p;
+    vertices[1] = p;
 }
 
 void Cell2D::setVertex3(Point p) {
-    this->vertex[2] = p;
+    vertices[2] = p;
 }
 
 void Cell2D::setVertex4(Point p) {
-    this->vertex[3] = p;
+    vertices[3] = p;
 }
 
 void Cell2D::setNeighbor1(Cell2D* currentCell) {
@@ -105,5 +105,15 @@ void Cell2D::setNeighbor4(Cell2D* currentCell) {
 }
 
 void Cell2D::setVol(double vol) {
-    this->vol = vol;
+  this->vol = vol;
+}
+
+const std::array<Point, 4>& Cell2D::getVertices() const
+{
+  return vertices;
+}
+
+const std::array<Face, 4>& Cell2D::getFaces() const
+{
+  return faces;
 }
