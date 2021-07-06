@@ -1,40 +1,40 @@
 
 #include "Cell2D.h"
 
-unsigned Cell2D::getIdent() {
+unsigned Cell2D::getIdent() const {
     return this->ident;
 }
 
-Point Cell2D::getVertex1() {
-    return this->vertex[0];
+Point& Cell2D::getVertex1()  {
+    return vertex[0];
 }
 
-Point Cell2D::getVertex2() {
-    return this->vertex[1];
+Point& Cell2D::getVertex2()  {
+    return vertex[1];
 }
 
-Point Cell2D::getVertex3() {
-    return this->vertex[2];
+Point& Cell2D::getVertex3()  {
+    return vertex[2];
 }
 
-Point Cell2D::getVertex4() {
-    return this->vertex[3];
+Point& Cell2D::getVertex4()  {
+    return vertex[3];
 }
 
-Face Cell2D::getFace1() {
-    return this->faces[0];
+Face& Cell2D::getFace1()  {
+    return faces[0];
 }
 
-Face Cell2D::getFace2() {
-    return this->faces[1];
+Face& Cell2D::getFace2()  {
+    return faces[1];
 }
 
-Face Cell2D::getFace3() {
-    return this->faces[2];
+Face& Cell2D::getFace3()  {
+    return faces[2];
 }
 
-Face Cell2D::getFace4() {
-    return this->faces[3];
+Face& Cell2D::getFace4()  {
+    return faces[3];
 }
 
 Cell2D* Cell2D::getNeighbor1() {
@@ -53,7 +53,7 @@ Cell2D* Cell2D::getNeighbor4() {
     return neighbor4;
 }
 
-double Cell2D::getVol() {
+double Cell2D::getVol() const {
     double x1 = this->vertex[0].getX();
     double x2 = this->vertex[1].getX();
     double x3 = this->vertex[2].getX();

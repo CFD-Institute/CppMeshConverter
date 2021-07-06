@@ -8,6 +8,8 @@
 #include "FvmMesh2D.h"
 #include "GmshReader.h"
 
+#include <algorithm>
+
 using namespace std;
 
 FvmMesh2D::FvmMesh2D() {
@@ -22,47 +24,55 @@ vector<Cell2D> & FvmMesh2D::getCells() {
 void FvmMesh2D::assignVertex() {
     vector<Point> coordNodes = mshReader.getCoordNodes();
 
+    auto nodeIdents = mshReader.getIdNodes();
     for (unsigned i = 0; i < mshReader.getNbElm(); i++) {
 
     Cell2D aCell;
 
     aCell.setIdent(i);
 
-    NodeIdent nodeIdent = mshReader.getIdNodes()[i];
-    unsigned idnode = nodeIdent.getIdNode()[5];
+    NodeIdent nodeIdent = nodeIdents[i];
+    unsigned idnode     = nodeIdent.getIdNode()[5];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex1(node);
-            break;
-	}
+    auto begin = coordNodes.begin();
+    auto end   = coordNodes.end();
+
+    auto target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex1(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[6];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex2(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex2(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[7];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex3(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex3(*target_node);
     }
 
     idnode = nodeIdent.getIdNode()[8];
 
-    for (Point node : coordNodes) {
-	if (idnode == node.getId()) {
-            aCell.setVertex4(node);
-            break;
-	}
+    target_node = std::find_if(
+        begin, end, [&](const Point& node) {
+          return idnode == node.getId();
+        });
+    if (target_node    != end) {
+      aCell.setVertex4(*target_node);
     }
 
     this->cells.push_back(aCell);
@@ -70,19 +80,21 @@ void FvmMesh2D::assignVertex() {
 }
 
 void FvmMesh2D::assignFaces() {
-    for (Cell2D & cell : cells) {
-	cell.getFace1().setP1(cell.getVertex1());
-	cell.getFace1().setP2(cell.getVertex2());
 
-	cell.getFace2().setP1(cell.getVertex2());
-	cell.getFace2().setP2(cell.getVertex3());
+  std::for_each(cells.begin(), cells.end(), [](Cell2D& cell) {
 
-	cell.getFace3().setP1(cell.getVertex3());
-	cell.getFace3().setP2(cell.getVertex4());
 
-	cell.getFace4().setP1(cell.getVertex4());
-	cell.getFace4().setP2(cell.getVertex1());
-    }
+    cell.getFace1().setP1(cell.getVertex1());
+    cell.getFace1().setP2(cell.getVertex2());
+
+    cell.getFace2().setP1(cell.getVertex2());
+    cell.getFace2().setP2(cell.getVertex3());
+
+    cell.getFace3().setP1(cell.getVertex3());
+    cell.getFace3().setP2(cell.getVertex4());
+
+    cell.getFace4().setP1(cell.getVertex4());
+    cell.getFace4().setP2(cell.getVertex1());});
 }
 
 void FvmMesh2D::assignBoundaryCondition() {
@@ -145,12 +157,15 @@ void FvmMesh2D::assignBoundaryCondition() {
 }
 
 void FvmMesh2D::calculVol() {
-    unsigned i = 0;
+//  unsigned i = 0;
 
-    for (auto it = this->cells.begin(); it != this->cells.end(); ++it) {
-	this->cells[i].setVol(this->cells[i].getVol());
-	i = i + 1;
-    }
+  std::for_each(cells.begin(), cells.end(), [](Cell2D cell) {
+    cell.setVol(cell.getVol());
+    });
+//    for (auto it = this->cells.begin(); it != this->cells.end(); ++it) {
+//	this->cells[i].setVol(this->cells[i].getVol());
+//	i = i + 1;
+//    }
 }
 
 void FvmMesh2D::detectNearestNeighbor() {
@@ -388,41 +403,46 @@ void FvmMesh2D::writeTecplot() {
 
     outfile.setf(ios::fixed, ios::floatfield);
     outfile.precision(10);
-    outfile << "VARIABLES=X,Y,CELL_IDENT,NEIGHBOR1,NEIGHBOR2,NEIGHBOR3,NEIGHBOR4" << endl;
-    outfile << "VARIABLES=X,Y" << endl;
-    outfile << "ZONE T=\"UNSTRUCTURED-COUNTOUR\"" << endl;
-    outfile << "ZONETYPE=FEPOLYGON" << endl;
-    outfile << "NODES=" << nbNodes << endl;
-    outfile << "ELEMENTS=" << nbElm << endl;
-    outfile << "FACES=" << nbElm * 4 << endl;
-    outfile << "NumConnectedBoundaryFaces=0" << endl;
-    outfile << "TotalNumBoundaryConnections=0" << endl;
+    outfile << "VARIABLES=X,Y,CELL_IDENT,NEIGHBOR1,NEIGHBOR2,NEIGHBOR3,NEIGHBOR4" << '\n';
+    outfile << "VARIABLES=X,Y" << '\n';
+    outfile << "ZONE T=\"UNSTRUCTURED-COUNTOUR\"" << '\n';
+    outfile << "ZONETYPE=FEPOLYGON" << '\n';
+    outfile << "NODES=" << nbNodes << '\n';
+    outfile << "ELEMENTS=" << nbElm << '\n';
+    outfile << "FACES=" << nbElm * 4 << '\n';
+    outfile << "NumConnectedBoundaryFaces=0" << '\n';
+    outfile << "TotalNumBoundaryConnections=0" << '\n';
 
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getX() << endl;
+      outfile << setw(15) << coordNodes[i].getX() << '\n';
     }
+    outfile << flush;
     
     for (unsigned i = 0; i < nbNodes; i++) {
-	outfile << setw(15) << coordNodes[i].getY() << endl;
+        outfile << setw(15) << coordNodes[i].getY() << '\n';
     }
+    outfile << flush;
 
     /*
      * Node indexes
      */
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << idNodes[i].getIdNode()[5] << " " << idNodes[i].getIdNode()[6] << endl;
-        outfile << idNodes[i].getIdNode()[6] << " " << idNodes[i].getIdNode()[7] << endl;
-        outfile << idNodes[i].getIdNode()[7] << " " << idNodes[i].getIdNode()[8] << endl;
-        outfile << idNodes[i].getIdNode()[8] << " " << idNodes[i].getIdNode()[5] << endl;
+        outfile << idNodes[i].getIdNode()[5] << " " << idNodes[i].getIdNode()[6] << '\n';
+        outfile << idNodes[i].getIdNode()[6] << " " << idNodes[i].getIdNode()[7] << '\n';
+        outfile << idNodes[i].getIdNode()[7] << " " << idNodes[i].getIdNode()[8] << '\n';
+        outfile << idNodes[i].getIdNode()[8] << " " << idNodes[i].getIdNode()[5] << '\n';
     }
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << i + 1 << " " << i + 1 << " " << i + 1 << " " << i + 1 << " " << endl;
+        outfile << i + 1 << " " << i + 1 << " " << i + 1 << " " << i + 1 << " " << '\n';
     }
+    outfile << flush;
 
     for (unsigned i = 0; i < nbElm; i++) {
-        outfile << 0 << " " << 0 << " " << 0 << " " << 0 << " " << endl;
+        outfile << 0 << " " << 0 << " " << 0 << " " << 0 << " " << '\n';
     }
+    outfile << flush;
 
     outfile.close();
 }

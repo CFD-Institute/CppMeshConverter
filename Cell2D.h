@@ -11,20 +11,20 @@
 class Cell2D {
 public:
     Cell2D() {};
-    unsigned getIdent();
-    Point getVertex1();
-    Point getVertex2();
-    Point getVertex3();
-    Point getVertex4();
-    Face getFace1();
-    Face getFace2();
-    Face getFace3();
-    Face getFace4();
+    unsigned getIdent() const;
+    Point& getVertex1();
+    Point& getVertex2();
+    Point& getVertex3();
+    Point& getVertex4();
+    Face& getFace1();
+    Face& getFace2();
+    Face& getFace3();
+    Face& getFace4();
     Cell2D* getNeighbor1();
     Cell2D* getNeighbor2();
     Cell2D* getNeighbor3();
     Cell2D* getNeighbor4();
-    double getVol();
+    double getVol() const;
     
     void setIdent(unsigned);
     void setVertex(Point*);
