@@ -1,27 +1,18 @@
 #include <iostream>
-#include <chrono>
+#include "ExecutionTimer.h"
 #include "FvmMesh2D.h"
-
-using namespace std;
-using namespace std::chrono;
 
 int main()
 {
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    ExecutionTimer<std::chrono::milliseconds> timer;
+    FvmMesh2D finiteVolumeMesh;
 
-	FvmMesh2D finiteVolumeMesh;
-
-	finiteVolumeMesh.assignVertex();
-	finiteVolumeMesh.assignFaces();
+    finiteVolumeMesh.assignVertex();
+    finiteVolumeMesh.assignFaces();
 //	finiteVolumeMesh.assignBoundaryCondition();
-	finiteVolumeMesh.detectNearestNeighbor();
-	finiteVolumeMesh.writeTecplot();
-        finiteVolumeMesh.writeVtk();
-
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	auto duration = duration_cast<seconds>(t2 - t1).count();
-
-	cout << duration << " seconds." << endl;
-
+    finiteVolumeMesh.detectNearestNeighbor();
+    finiteVolumeMesh.writeTecplot();
+    finiteVolumeMesh.writeVtk();   
+    timer.stop(); 
     return 0;
 }
