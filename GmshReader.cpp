@@ -107,7 +107,8 @@ void GmshReader::readMesh() {
     for (unsigned i = 0; i < nbElMsh; i++) {
 	line = ReadLine(stream_msh);
 	NodeIdentMsh node_msh;
-	stringstream ss = stringstream(line);  // no error with Visual C++ 2015, error with g++
+	//stringstream ss = stringstream(line);  // no error with Visual C++ 2015, error with g++
+	stringstream ss(line); // this shall work with g++ 4.8.4
 	vector <unsigned> line_number;
 	while (!ss.eof()) {
             unsigned number;
