@@ -20,12 +20,12 @@ public:
     void setIdFace(unsigned);
     void setArea(double);
     
-    Point getP1();
-    Point getP2();
-    Point getCentroid();
-    int getBcTyp();
-    unsigned getIdFace();
-    double getArea();
+    Point& getP1();
+    Point& getP2();
+    Point& getCentroid();
+    int getBcTyp() const;
+    unsigned getIdFace() const;
+    double getArea() const;
     
 private:
     Point p1, p2;

@@ -7,12 +7,8 @@
  * and open the template in the editor.
  */
 
-NodeIdentMsh::NodeIdentMsh(unsigned ident, unsigned elemTyp, unsigned nbTags, unsigned tag1, unsigned tag2) {
-    this->setIdent(ident);
-    this->setElemTyp(elemTyp);
-    this->setNbTags(nbTags);
-    this->setTag1(tag1);
-    this->setTag2(tag2);
+NodeIdentMsh::NodeIdentMsh(unsigned ident, unsigned elemTyp, unsigned nbTags, unsigned tag1, unsigned tag2)
+    : ident(ident), elemTyp(elemTyp), nbTags(nbTags), tag1(tag1), tag2(tag2){
 }
 
 unsigned NodeIdentMsh::getIdent() {

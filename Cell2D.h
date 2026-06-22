@@ -7,24 +7,25 @@
 
 #pragma once
 #include "Face.h"
+#include <array>
 
 class Cell2D {
 public:
     Cell2D() {};
-    unsigned getIdent();
-    Point getVertex1();
-    Point getVertex2();
-    Point getVertex3();
-    Point getVertex4();
-    Face getFace1();
-    Face getFace2();
-    Face getFace3();
-    Face getFace4();
+    unsigned getIdent() const;
+    Point& getVertex1();
+    Point& getVertex2();
+    Point& getVertex3();
+    Point& getVertex4();
+    Face& getFace1();
+    Face& getFace2();
+    Face& getFace3();
+    Face& getFace4();
     Cell2D* getNeighbor1();
     Cell2D* getNeighbor2();
     Cell2D* getNeighbor3();
     Cell2D* getNeighbor4();
-    double getVol();
+    double getVol() const;
     
     void setIdent(unsigned);
     void setVertex(Point*);
@@ -38,11 +39,15 @@ public:
     void setNeighbor3(Cell2D*);
     void setNeighbor4(Cell2D*);
     void setVol(double);
-    
-private:
+
+    const std::array<Point, 4>& getVertices() const;
+
+    const std::array<Face, 4>& getFaces() const;
+
+  private:
     unsigned ident = 0;
-    Point vertex[4];
-    Face faces[4];
+    std::array<Point, 4> vertices;
+    std::array<Face, 4> faces;
     Cell2D *neighbor1 = nullptr;
     Cell2D *neighbor2 = nullptr;
     Cell2D *neighbor3 = nullptr;
