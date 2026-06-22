@@ -6,7 +6,7 @@
 
 /* 
  * File:   NodeIdent.h
- * Author: HP
+ * Author: Truong
  *
  * Created on June 12, 2021, 12:14 PM
  */

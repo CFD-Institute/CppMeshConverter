@@ -1,6 +1,6 @@
 /* 
  * File:   Face.h
- * Author: HP
+ * Author: Truong
  *
  * Created on June 12, 2021, 4:08 PM
  */
